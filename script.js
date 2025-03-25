@@ -25,17 +25,6 @@ form.addEventListener("submit", function (e) {
     form.reset();
 });
 
-function renderExpenses() {
-    expenseList.innerHTML = "";
-    expenses.forEach((expense) => {
-        let li = document.createElement("li");
-        li.classList = "flex justify-between bg-white p-2 mb-2 shadow";
-        li.innerHTML = `${expense.name} - ₹${expense.amount} 
-            <span class="text-gray-500">(${expense.category})</span>
-            <button onclick="deleteExpense(${expense.id})" class="text-red-500">❌</button>`;
-        expenseList.appendChild(li);
-    });
-}
 
 function deleteExpense(id) {
     expenses = expenses.filter(expense => expense.id !== id);
