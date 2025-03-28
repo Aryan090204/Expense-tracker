@@ -1,99 +1,137 @@
-document.addEventListener("DOMContentLoaded", loadExpenses);
+function showSignup() {
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+        anime({
+        targets: loginSection,
+        translateX: [-300, 0],
+        opacity: [1, 0],
+        duration: 500,
+        easing: 'easeInOutQuad',
+        complete: function () {
+            loginSection.classList.add('hidden');
+            signupSection.classList.remove('hidden');
+            anime({
+                targets: signupSection,
+                translateX: [300, 0],
+                opacity: [0, 1],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+        }
+    });
+}
+let loginsign=document.querySelector(".loginsignup");
+let ctabutton=document.querySelector(".cta-button");
+let container=document.querySelector(".container");
+container.style.display="none";
+let section1=document.querySelector(".section1");
 
-const form = document.getElementById("expense-form");
-const expenseList = document.getElementById("expense-list");
-const ctx = document.getElementById("expense-chart").getContext("2d");
-
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-let chart;
-
-form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    let name = document.getElementById("expense-name").value;
-    let amount = parseFloat(document.getElementById("expense-amount").value);
-    let category = document.getElementById("expense-category").value;
-
-    if (name && amount > 0) {
-        let expense = { id: Date.now(), name, amount, category };
-        expenses.push(expense);
-        localStorage.setItem("expenses", JSON.stringify(expenses));
-        renderExpenses();
-        updateChart();
-        provideFinancialAdvice();
+ctabutton.addEventListener("click",()=>{
+    if(container.style.display=="none"){
+        container.style.display="block";
+        section1.style.display="none"
     }
-    form.reset();
-});
-
-function renderExpenses() {
-    expenseList.innerHTML = "";
-    expenses.forEach((expense) => {
-        let li = document.createElement("li");
-        li.classList = "flex justify-between bg-white p-2 mb-2 shadow";
-        li.innerHTML = `${expense.name} - ₹${expense.amount} 
-            <span class="text-gray-500">(${expense.category})</span>
-            <button onclick="deleteExpense(${expense.id})" class="text-red-500">❌</button>`;
-        expenseList.appendChild(li);
-    });
-}
-
-function deleteExpense(id) {
-    expenses = expenses.filter(expense => expense.id !== id);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    renderExpenses();
-    updateChart();
-    provideFinancialAdvice();
-}
-
-function loadExpenses() {
-    renderExpenses();
-    updateChart();
-}
-
-function updateChart() {
-    let categories = {};
-    expenses.forEach(exp => categories[exp.category] = (categories[exp.category] || 0) + exp.amount);
-
-    let labels = Object.keys(categories);
-    let data = Object.values(categories);
-
-    if (chart) chart.destroy();
-
-    chart = new Chart(ctx, {
-        type: "pie",
-        data: {
-            labels,
-            datasets: [{ data, backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50"] }],
-        },
-    });
-}
-
-function provideFinancialAdvice() {
-    let total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-    let categorySpending = {};
-
-    expenses.forEach(exp => {
-        categorySpending[exp.category] = (categorySpending[exp.category] || 0) + exp.amount;
-    });
-
-    let advice = "Your spending is balanced!";
-    if ((categorySpending["Entertainment"] || 0) > total * 0.4) {
-        advice = "You are spending too much on entertainment! Consider reducing it.";
-    } else if ((categorySpending["Shopping"] || 0) > total * 0.3) {
-        advice = "Your shopping expenses are high. Try budgeting more carefully!";
+    else{
+        container.style.display="none";
+        section1.style.display="block"
     }
+})
+loginsign.addEventListener("click",()=>{
+    if(container.style.display=="none"){
+        container.style.display="block";
+        section1.style.display="none"
+    }
+    else{
+        container.style.display="none";
+        section1.style.display="block"
+    }
+})
 
-    let adviceBox = document.getElementById("ai-advice");
-    adviceBox.textContent = advice;
-    adviceBox.classList.remove("hidden");
+function showLogin() {
+    const signupSection = document.getElementById('signup-section');
+    const loginSection = document.getElementById('login-section');
+
+    anime({
+        targets: signupSection,
+        translateX: [300, 0],
+        opacity: [1, 0],
+        duration: 500,
+        easing: 'easeInOutQuad',
+        complete: function () {
+            signupSection.classList.add('hidden');
+            loginSection.classList.remove('hidden');
+            anime({
+                targets: loginSection,
+                translateX: [-300, 0],
+                opacity: [0, 1],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+        }
+    });
 }
 
-function calculateTax() {
-    let income = parseFloat(document.getElementById("income").value);
-    let tax = income <= 250000 ? 0 : income <= 500000 ? income * 0.05 : income <= 1000000 ? income * 0.2 : income * 0.3;
-    document.getElementById("tax-result").textContent = `Estimated Tax: ₹${tax}`;
+function signup() {
+    const name = document.getElementById('signup-name').value;
+    const phone = document.getElementById('signup-phone').value;
+    const email = document.getElementById('signup-email').value;
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
+    
+    if (name && phone && email && username && password) {
+        localStorage.setItem('name', name);
+        localStorage.setItem('phone', phone);
+        localStorage.setItem('email', email);
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
+        alert('Sign up successful! Please log in.');
+        showLogin();
+    } else {
+        alert('Please fill in all fields.');
+    }
 }
 
-function mockPayment() {
-    alert("Payment Simulation: Transaction Successful!");
+function login() {
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+    const storedUsername = localStorage.getItem('username');
+    const storedPassword = localStorage.getItem('password');
+    
+    if (username === storedUsername && password === storedPassword) {
+        sessionStorage.setItem('loggedIn', 'true');
+        window.location.href = 'dashboard.html';
+    } else {
+        alert('Invalid username or password.');
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem('loggedIn');
+    window.location.href = 'index.html';
+}
+
+function checkLogin() {
+    const loggedIn = sessionStorage.getItem('loggedIn');
+    if (!loggedIn) {
+        window.location.href = 'index.html';
+    }
+}
+
+function animateDashboard() {
+    anime({
+        targets: '.dashboard-container h1',
+        translateY: [-20, 0],
+        opacity: [0, 1],
+        duration: 1000,
+        easing: 'easeOutBounce'
+    });
+
+    anime({
+        targets: '.dashboard-container button',
+        translateY: [20, 0],
+        opacity: [0, 1],
+        duration: 1000,
+        delay: 500,
+        easing: 'easeOutBounce'
+    });
 }
